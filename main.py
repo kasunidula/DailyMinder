@@ -4,10 +4,18 @@ import pickle
 import os
 import random
 
-# ✅ Initialize text-to-speech engine ONCE
-engine = pyttsx3.init()
-engine.setProperty('rate', 165)
-engine.setProperty('volume', 1.0)
+# ✅ Proper speak() function with fresh engine every time
+def speak(text):
+    """Speaks the given text using pyttsx3 with fresh engine every time."""
+    try:
+        engine = pyttsx3.init()
+        engine.setProperty('rate', 165)
+        engine.setProperty('volume', 1.0)
+        engine.say(text)
+        engine.runAndWait()
+        engine.stop()
+    except Exception as e:
+        print(f"(Voice error) {e}")
 
 # Load tasks if the file exists
 if os.path.exists("tasks.pkl"):
@@ -15,14 +23,6 @@ if os.path.exists("tasks.pkl"):
         tasks = pickle.load(f)
 else:
     tasks = []
-
-def speak(text):
-    """Speaks the given text using pyttsx3."""
-    try:
-        engine.say(text)
-        engine.runAndWait()
-    except Exception as e:
-        print(f"(Voice error) {e}")
 
 def add_task(task):
     tasks.append({"task": task, "date": datetime.date.today().strftime("%Y-%m-%d")})
